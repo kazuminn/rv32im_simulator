@@ -1,12 +1,12 @@
-pub mod system;
-pub mod cpu;
 pub mod bus;
+pub mod cpu;
 pub mod elfload;
+pub mod system;
 
-use cpu::CPU;
-use cpu::{fetch, fetch_compressed};
-use bus::Bus;
 use bus::dram::Dram;
+use bus::Bus;
+use cpu::fetch;
+use cpu::CPU;
 
 pub struct Simulator {
     pub cpu: cpu::CPU,
@@ -28,17 +28,9 @@ impl Simulator {
         use crate::cpu::execution::Execution;
 
         loop {
-            let is_cinst: bool = Dram::raw_byte(&self.bus.dram, self.cpu.pc) & 0x3 != 0x3;
-
-            if is_cinst {
-                fetch_compressed(&self.bus.dram, self.cpu.pc)
-                    .decode()
-                    .execution(&mut self.cpu, &mut self.bus.dram);
-            }else{
-                fetch(&self.bus.dram, self.cpu.pc)
-                    .decode()
-                    .execution(&mut self.cpu, &mut self.bus.dram);
-            }
+            fetch(&self.bus.dram, self.cpu.pc)
+                .decode()
+                .execution(&mut self.cpu, &mut self.bus.dram);
         }
     }
-} 
+}
