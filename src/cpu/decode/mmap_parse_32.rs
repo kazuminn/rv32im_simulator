@@ -2,6 +2,10 @@ use super::Decode;
 use crate::cpu::instruction::{OpecodeKind, Instruction};
 
 impl Decode for u32 {
+    fn new(value: Box<dyn Decode>) -> Self {
+        Self { value }
+    }
+
     fn decode(&self) -> Instruction {
         let new_opc: OpecodeKind = match self.parse_opecode(){
             Ok(opc)  => opc,

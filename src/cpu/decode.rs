@@ -3,7 +3,12 @@ mod mmap_parse_32;
 
 use super::instruction::{OpecodeKind, Instruction};
 
+pub struct Decode {
+    value: Box<dyn &Decode>,
+}
+
 pub trait Decode {
+    fn new(&self, Box<&Decode>) -> self;
     fn decode(&self) -> Instruction;
     fn parse_opecode(&self) -> Result<OpecodeKind, &'static str>;
     fn parse_rd(&self,  opkind: &OpecodeKind) -> Option<usize>;

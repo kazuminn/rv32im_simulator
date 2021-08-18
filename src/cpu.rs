@@ -31,7 +31,7 @@ impl Wrapper {
     }
 }
 
-impl Deref for Wrapper {
+impl Deref for Decode {
     type Target = Box<dyn Decode>;
 
     fn deref(&self) -> &Self::Target {
@@ -41,7 +41,7 @@ impl Deref for Wrapper {
 
 use crate::cpu::decode::Decode;
 
-pub fn fetch(dram: &dram::Dram, index_pc: usize) -> Wrapper {
+pub fn fetch(dram: &dram::Dram, index_pc: usize) -> Decode {
     // return instruction data
 
     let is_cinst: bool = dram.raw_byte(index_pc) & 0x3 != 0x3;
@@ -51,10 +51,10 @@ pub fn fetch(dram: &dram::Dram, index_pc: usize) -> Wrapper {
             | (Dram::raw_byte(dram, index_pc + 3) as u32) << 16
             | (Dram::raw_byte(dram, index_pc + 2) as u32) << 8
             | (Dram::raw_byte(dram, index_pc + 1) as u32);
-        Wrapper::new(Box::new(value))
+        Decode::new(Box::new(value))
     } else {
         let value = (Dram::raw_byte(dram, index_pc + 1) as u16) << 8
             | (Dram::raw_byte(dram, index_pc + 0) as u16);
-        Wrapper::new(Box::new(value))
+        Decode::new(Box::new(value))
     }
 }
